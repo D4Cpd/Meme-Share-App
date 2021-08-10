@@ -1,5 +1,7 @@
 package com.example.memeshareapp
 
+import android.app.Notification
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,9 +22,12 @@ import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    var currentImageUrl:String?=null
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        A
         LoadMeme()
     }
     fun LoadMeme(){
@@ -35,9 +40,9 @@ class MainActivity : AppCompatActivity() {
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url,null,
             Response.Listener { response ->
-                val url = response.getString("url")
+                currentImageUrl = response.getString("url")
 
-                Glide.with(this).load(url).listener(object: RequestListener<Drawable>{
+                Glide.with(this).load(currentImageUrl).listener(object: RequestListener<Drawable>{
                     override fun onLoadFailed(
                         e: GlideException?,
                         model: Any?,
@@ -73,6 +78,11 @@ class MainActivity : AppCompatActivity() {
         LoadMeme()
     }
     fun ShareMeme(view: View) {
+        val intent=Intent(Intent.ACTION_SEND)
+        intent.type="text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT,"Hey,Checkout this cool meme I got from Reddit $currentImageUrl")
+        val chooser=Intent.createChooser(intent,"Share this Meme using...")
+        startActivity(chooser)
 
     }
 }
